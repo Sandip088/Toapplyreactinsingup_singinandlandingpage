@@ -1,0 +1,122 @@
+import { useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from "react-router-dom";
+
+// --- Signup Page ---
+function Signup() {
+  const navigate = useNavigate();
+  const [form, setForm] = useState({ username: "", password: "" });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    localStorage.setItem("user", JSON.stringify(form));
+    alert("Signup successful!");
+    navigate("/login");
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center h-screen">
+      <h1 className="text-2xl mb-4">Signup</h1>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+        <input
+          type="text"
+          placeholder="Username"
+          className="border p-2 rounded"
+          value={form.username}
+          onChange={(e) => setForm({ ...form, username: e.target.value })}
+          required
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          className="border p-2 rounded"
+          value={form.password}
+          onChange={(e) => setForm({ ...form, password: e.target.value })}
+          required
+        />
+        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
+          Signup
+        </button>
+      </form>
+      <p className="mt-3">Already have an account? <Link to="/login" className="text-blue-600">Login</Link></p>
+    </div>
+  );
+}
+
+// --- Login Page ---
+function Login() {
+  const navigate = useNavigate();
+  const [form, setForm] = useState({ username: "", password: "" });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const savedUser = JSON.parse(localStorage.getItem("user"));
+    if (savedUser && savedUser.username === form.username && savedUser.password === form.password) {
+      alert("Login successful!");
+      navigate("/landing1");
+    } else {
+      alert("Invalid credentials!");
+    }
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center h-screen">
+      <h1 className="text-2xl mb-4">Login</h1>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+        <input
+          type="text"
+          placeholder="Username"
+          className="border p-2 rounded"
+          value={form.username}
+          onChange={(e) => setForm({ ...form, username: e.target.value })}
+          required
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          className="border p-2 rounded"
+          value={form.password}
+          onChange={(e) => setForm({ ...form, password: e.target.value })}
+          required
+        />
+        <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded">
+          Login
+        </button>
+      </form>
+    </div>
+  );
+}
+
+// --- Landing Page 1 ---
+function Landing1() {
+  return (
+    <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
+      <h1 className="text-3xl mb-4">Welcome to Landing Page 1 🚀</h1>
+      <Link to="/landing2" className="bg-blue-600 text-white px-4 py-2 rounded">Go to Landing Page 2</Link>
+    </div>
+  );
+}
+
+// --- Landing Page 2 ---
+function Landing2() {
+  return (
+    <div className="flex flex-col items-center justify-center h-screen bg-yellow-100">
+      <h1 className="text-3xl mb-4">This is Landing Page 2 🎉</h1>
+      <Link to="/login" className="bg-red-600 text-white px-4 py-2 rounded">Logout</Link>
+    </div>
+  );
+}
+
+// --- App Component (Main Router) ---
+export default function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Signup />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/landing1" element={<Landing1 />} />
+        <Route path="/landing2" element={<Landing2 />} />
+      </Routes>
+    </Router>
+  );
+}
